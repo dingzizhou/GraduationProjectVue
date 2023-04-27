@@ -1,0 +1,17 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "public/md5_worker.js"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["element-plus/global","vite/client"]
+  },
+
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
