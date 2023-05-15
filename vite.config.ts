@@ -13,7 +13,7 @@ export default defineConfig({
     }
   },
   server:{
-    port:80,
+    port:8000,
     proxy:{
       //开发路径
       '/api':{

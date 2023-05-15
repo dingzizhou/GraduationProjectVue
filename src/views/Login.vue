@@ -8,8 +8,8 @@ import { ref } from 'vue';
 const tokenStore = useTokenStore();
 
 const loginForm = ref({
-  username:"",
-  password:"",
+  username:"admin",
+  password:"admin",
 })
 
 let rules = ref({
@@ -29,7 +29,7 @@ function login(){
     if(response.status == 200){
       tokenStore.setToken(response.data)
       ElMessage.success("登录成功")
-      router.push("/home")
+      router.push("/allFile")
     }
     else if(response.status == 500){
       ElMessage.error(response.data)

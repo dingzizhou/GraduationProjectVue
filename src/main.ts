@@ -10,6 +10,9 @@ import './assets/main.css'
 import {install} from '@icon-park/vue-next/es/all'
 import '@icon-park/vue-next/styles/index.css'
 
+import uploader from 'vue-simple-uploader'
+import 'vue-simple-uploader/dist/style.css'
+
 const app = createApp(App)
 
 // IconPark引入
@@ -23,5 +26,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)
+app.use(uploader)
 
 app.mount('#app')
