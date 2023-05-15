@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { Upload,Plus } from '@element-plus/icons-vue';
+import folder_mini from '@/assets/folder_mini.png'
+import zip_mini from '@/assets/zip_mini.png'
+import word_mini from '@/assets/word_mini.png'
+import video_mini from '@/assets/video_mini.png'
+import { Upload,Plus,Share } from '@element-plus/icons-vue';
 import Thumbnail from '@/components/Thumbnail.vue'
 import axios from '@/axios'
 import { useTokenStore } from '@/stores/token';
 import { nextTick, onMounted, ref, type Ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage,ElMessageBox } from 'element-plus';
 import FileTool from '@/utils/FileTool'
 import VideoPlayer from '@/components/VideoPlayer.vue';
 const backENV = import.meta.env.VITE_SPRINGBOOT_RUNENV
@@ -26,6 +30,8 @@ const filePathList:Ref<filePath[]> = ref([])
 const videoDialogVisible = ref(false)
 const pdfDialogVisible = ref(false)
 const createFolderVisible = ref(false)
+const shareFileVisible = ref(false)
+const shareFileInfo = ref()
 const createFolderName = ref("")
 const requestFileUuid = ref("")
 function getAllFile(folder:string) {
@@ -132,6 +138,35 @@ const createFolder=()=>{
   getAllFile(currentFolder)
 }
 
+const getShareFile = () =>{
+  ElMessageBox.prompt('输入分享码', '获取分享的文件', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+  })
+  .then(({ value }) => {
+    axios({
+      url:'/api/getSharedFile',
+      method:'get',
+      params:{
+        shareCode:value
+      }
+    })
+    .then((response)=>{
+      shareFileInfo.value = response.data
+      shareFileVisible.value = true
+    },(error)=>{
+      console.log(error)
+      ElMessage.error(error.response.data)
+    })
+  })
+  .catch(() => {
+    ElMessage({
+      type: 'info',
+      message: '取消',
+    })
+  })
+}
+
 // vue-uploader相关内容
 const uploaderRef = ref(null)
 // const uploaderInstance = uploaderRef.value.uploader
@@ -183,6 +218,7 @@ getAllFile(currentFolder)
 <h1>全部</h1>
 <div class="" style="margin-top: 5px;">
   <el-button type="primary" :icon="Upload" @click="upload()">上传</el-button>
+  <el-button type="primary" :icon="Share" @click="getShareFile()">获取分享的文件</el-button>
   <el-popover placement="bottom"  :width="160" :visible="createFolderVisible">
     <template #reference>
       <el-button type="default" :icon="Plus" @click="createFolderVisible=true">新建文件夹</el-button>
@@ -254,6 +290,33 @@ getAllFile(currentFolder)
 </el-dialog>
 <el-dialog v-model="pdfDialogVisible" center align-center destroy-on-close style="width: 70%;height: 90%;">
   <iframe :src="baseURL+'/onlinePDF'+'?token='+tokenStore.token+'&uuid='+requestFileUuid" style="width: 100%;height: 800px;display: inline-block;"></iframe>
+</el-dialog>
+
+<!-- 分享的文件显示的地方 -->
+<el-dialog v-model="shareFileVisible">
+  <div style="display: flex;align-items: center;justify-content: center;" @click="shareFileInfo.fileType === 1 ? openFolder(shareFileInfo.uuid) : openFile(shareFileInfo.fileName,shareFileInfo.uuid)">
+  <div style="width: 140px;height: 140px;text-align: center;">
+    <el-image v-if="(shareFileInfo.fileType === 1 ? 'folder':fileTool.getFileTypeByFileName(shareFileInfo.fileName)) === 'folder'" :src="folder_mini" fit="contain" style="width:110px;height: 90px;"/>
+    <el-image v-else-if="(shareFileInfo.fileType === 1 ? 'folder':fileTool.getFileTypeByFileName(shareFileInfo.fileName)) === 'zip'" :src="zip_mini" fit="contain" style="width:110px;height: 90px;"/>
+    <el-image v-else-if="(shareFileInfo.fileType === 1 ? 'folder':fileTool.getFileTypeByFileName(shareFileInfo.fileName)) === 'word'" :src="word_mini" fit="contain" style="width:110px;height: 90px;"/>
+    <el-image v-else-if="(shareFileInfo.fileType === 1 ? 'folder':fileTool.getFileTypeByFileName(shareFileInfo.fileName)) === 'video'" :src="video_mini" fit="contain" style="width:110px;height: 90px;"/>
+    <el-image v-else-if="(shareFileInfo.fileType === 1 ? 'folder':fileTool.getFileTypeByFileName(shareFileInfo.fileName)) === 'pdf'" :src="baseURL+'/thumbnail/'+'pdf'+'?token='+tokenStore.token+'&uuid='+shareFileInfo.uuid" fit="contain" style="width:110px;height: 90px;"/>
+    <el-image v-else :src="baseURL+'/thumbnail/'+'img'+'?token='+tokenStore.token+'&uuid='+shareFileInfo.uuid" fit="contain" style="width:110px;height: 90px;" 
+      :preview-src-list="[baseURL+'/thumbnail/'+'img'+'?token='+tokenStore.token+'&uuid='+shareFileInfo.uuid]" :initial-index="0"/>
+    <div>
+      <el-text style="font-weight: bold;">{{ shareFileInfo.fileName }}</el-text>
+    </div>
+    <div>
+      <el-text type="info">{{ shareFileInfo.updateTime }}</el-text>
+    </div>
+  </div>
+  </div>
+  <div style="display: flex;align-items: center;justify-content: center;margin-top: 10px;">
+    <el-link :href="'//localhost:8080/download?uuid='+shareFileInfo.uuid+'&token='+tokenStore.token">
+      <el-button>下载</el-button>
+    </el-link>
+  </div>
+  
 </el-dialog>
 </template>
 

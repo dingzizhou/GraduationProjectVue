@@ -27,7 +27,8 @@ function login(){
   })
   .then(function(response){
     if(response.status == 200){
-      tokenStore.setToken(response.data)
+      tokenStore.setToken(response.data.token)
+      tokenStore.setType(response.data.type)
       ElMessage.success("登录成功")
       router.push("/allFile")
     }

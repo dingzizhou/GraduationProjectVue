@@ -31,6 +31,11 @@ const router = createRouter({
           path:'/allFile',
           name:'allFile',
           component:()=>import('@/views/AllFile.vue')
+        },
+        {
+          path:'/adminUser',
+          name:'adminUser',
+          component:()=>import('@/views/admin/User.vue')
         }
       ]
     }

@@ -12,6 +12,11 @@
       <!-- <el-menu-item index="0" route="home">
         <span>主页</span>
       </el-menu-item> -->
+      <el-menu-item index="0" route="adminUser">
+        <icon-people theme="outline" size="24" fill="#333" style="margin-right: 10px;"/>
+        <template #title>用户管理</template>
+      </el-menu-item>
+      <el-divider />
       <el-menu-item index="1" route="allFile">
         <icon-file-cabinet theme="outline" size="24" fill="#333" style="margin-right: 10px;"/>
         <template #title>全部</template>
@@ -28,7 +33,7 @@
         <icon-video-one theme="outline" size="24" fill="#333" style="margin-right: 10px;"/>
         <span>视频</span>
       </el-menu-item> -->
-      <el-menu-item index="1" route="allFile">
+      <el-menu-item index="2" route="allFile">
         <icon-video-one theme="outline" size="24" fill="#333" style="margin-right: 10px;"/>
         <template #title>电影</template>
       </el-menu-item>
