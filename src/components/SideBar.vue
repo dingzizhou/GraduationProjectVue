@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import { useTokenStore } from '@/stores/token';
+const tokenStore = useTokenStore();
 </script>
 
 <template>
@@ -12,7 +13,7 @@
       <!-- <el-menu-item index="0" route="home">
         <span>主页</span>
       </el-menu-item> -->
-      <el-menu-item index="0" route="adminUser">
+      <el-menu-item index="0" route="adminUser" v-if="tokenStore.type=='0'">
         <icon-people theme="outline" size="24" fill="#333" style="margin-right: 10px;"/>
         <template #title>用户管理</template>
       </el-menu-item>

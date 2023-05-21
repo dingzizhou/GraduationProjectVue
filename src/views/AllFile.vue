@@ -231,7 +231,7 @@ getAllFile(currentFolder)
       </div>
     </template>
   </el-popover>
-  <el-button type="default" :icon="Plus" @click="">创建离线下载</el-button>
+  <el-button type="default" :icon="Plus" @click="" :disabled="true">创建离线下载</el-button>
 </div>
 <el-divider style="margin-top: 10px;margin-bottom: 10px;"/>
 <el-button @click="goBackPath()">返回上级</el-button>
